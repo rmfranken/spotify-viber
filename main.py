@@ -4,15 +4,20 @@ import requests
 import tkinter as tk
 from PIL import Image, ImageTk
 from io import BytesIO
+from dotenv import load_dotenv
 
 # Define required scope
 scope = "user-read-playback-state"
 
-# this requires filling 3 env variables:
-# export SPOTIPY_CLIENT_ID='your-spotify-client-id'
-# export SPOTIPY_CLIENT_SECRET='your-spotify-client-secret'
-# export SPOTIPY_REDIRECT_URI='your-app-redirect-url'
+# this requires filling 3 env variables in .env file:
+# SPOTIPY_CLIENT_ID='your-spotify-client-id'
+# SPOTIPY_CLIENT_SECRET='your-spotify-client-secret'
+# SPOTIPY_REDIRECT_URI='your-app-redirect-url'
 # these can be found in your spotify API dashboard
+
+#read env variables:
+
+load_dotenv()
 
 auth_manager = SpotifyOAuth(scope=scope, cache_path=".spotify_cache")  # Specify cache file
 sp = spotipy.Spotify(auth_manager=auth_manager)
@@ -23,20 +28,20 @@ root.title("Spotify Album Art")
 root.attributes('-fullscreen', True)  # Fullscreen mode
 root.configure(bg="black")
 
+
+
+# Canvas for Album Art
+canvas = tk.Label(root, bg="black")
+canvas.pack(expand=True)  # Centered with expand
+canvas.image = None  # Store a reference to the image
+
 # Separator Line
 separator = tk.Canvas(root, width=1080, height=2, bg="white", highlightthickness=0)
 separator.pack(pady=10)
 
-
 # Label for Song Title, Artist, and Album
 song_label = tk.Label(root, text="", font=("Arial", 32, "bold"), fg="white", bg="black", wraplength=1080, justify="center")
-song_label.pack(pady=10)
-
-# Canvas for Album Art
-canvas = tk.Label(root, bg="black")
-canvas.pack()
-canvas.image = None  # Store a reference to the image
-
+song_label.pack(side="bottom", pady=10)
 
 def update_album_art():
     """Fetch the current playing track and update the UI."""
@@ -56,7 +61,7 @@ def update_album_art():
         response = requests.get(album_art_url)
         if response.status_code == 200:
             img = Image.open(BytesIO(response.content))
-            img = img.resize((1080, 1080), Image.LANCZOS)  # Upscale to 1080p square
+            img = img.resize((1800, 1800), Image.LANCZOS)  # Upscale to 1080p square
             img_tk = ImageTk.PhotoImage(img)
             canvas.config(image=img_tk)
             canvas.image = img_tk  # Keep reference to prevent garbage collection
