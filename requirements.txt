@@ -1,0 +1,4 @@
+spotipy
+requests
+Pillow
+dotenv
