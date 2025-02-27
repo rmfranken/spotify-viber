@@ -36,22 +36,23 @@ def get_monitors():
 
 # Get available monitors
 monitors = get_monitors()
-print(monitors)
-# Select the monitor that is not primary
-if monitors:
-    non_primary_monitor = next((m for m in monitors if m.is_primary), None)
-    if non_primary_monitor:
-        screen_width = non_primary_monitor.width
-        screen_height = non_primary_monitor.height
-        monitor_x_start = non_primary_monitor.x
-        monitor_y_start = non_primary_monitor.y
+if len(monitors) == 2:
+    first_monitor = monitors[0]
+    second_monitor = monitors[1]
+    
+    if first_monitor.is_primary is False:
+        target_monitor = second_monitor
     else:
-        # Default to primary screen if no non-primary monitor is available
-        primary_monitor = next((m for m in monitors if m.is_primary), monitors[0])
-        screen_width = primary_monitor.width
-        screen_height = primary_monitor.height
-        monitor_x_start = primary_monitor.x
-        monitor_y_start = primary_monitor.y
+        target_monitor = first_monitor
+    
+    screen_width = target_monitor.width
+    screen_height = target_monitor.height
+    monitor_x_start = target_monitor.x
+    monitor_y_start = target_monitor.y
+else:
+    print("Error: Expected exactly 2 monitors, but found", len(monitors))
+    root.destroy()
+    exit(1)
 
 # Position window
 root.geometry(f"{screen_width}x{screen_height}+{monitor_x_start}+{monitor_y_start}")
@@ -63,33 +64,45 @@ canvas.pack(expand=True)  # Centered with expand
 canvas.image = None  # Store a reference to the image
 
 # Separator Line
-separator = tk.Canvas(root, width=min(1080, screen_width - 40), height=2, bg="white", highlightthickness=0)
+separator = tk.Canvas(root, width=min(screen_width, screen_height) - 200, height=2, bg="white", highlightthickness=0)
 separator.pack(pady=10)
 
 # Label for Song Title, Artist, and Album
-song_label = tk.Label(root, text="", font=("Arial", 32, "bold"), fg="white", bg="black", wraplength=min(1080, screen_width - 40), justify="center")
+song_label = tk.Label(root, text="", font=("Courier New", 32, "bold"), fg="white", bg="black", justify="center")
 song_label.pack(side="bottom", pady=10)
 
+def scroll_text(text, font_size):
+    """Scroll text in the label widget."""
+    global song_label
+    song_label.config(text=text)
+    song_label.after(200, lambda: scroll_text(text[1:] + text[0], font_size))
+    
 def update_album_art():
     """Fetch the current playing track and update the UI."""
-    global sp  # Ensure we use the same Spotify client
-
+    global sp
+    
     results = sp.current_playback()
-
+    
     if results and results.get('item'):
         track_name = results['item']['name']
         artist_name = results['item']['artists'][0]['name']
-        album_art_url = results['item']['album']['images'][0]['url']  # 640x640
-
-        # Update song label
-        song_label.config(text=f"{track_name} - {artist_name}")
-
+        album_art_url = results['item']['album']['images'][0]['url']
+        
+        # Add spacing to make scrolling more readable
+        display_text = f"{track_name} - {artist_name}          "
+        song_label.config(text=display_text)
+        
+        font_size = 32 
+        text_width = len(display_text) * font_size * 0.6  # Approximate width calculation
+        if text_width > min(screen_width, screen_height) - 200:
+            scroll_text(display_text, font_size)
+        
         # Download and display the album art
         response = requests.get(album_art_url)
         if response.status_code == 200:
             img = Image.open(BytesIO(response.content))
             # Size the image appropriately for the screen
-            display_size = min(screen_width, screen_height) - 100
+            display_size = min(screen_width, screen_height) - 200
             img = img.resize((display_size, display_size), Image.LANCZOS)
             img_tk = ImageTk.PhotoImage(img)
             canvas.config(image=img_tk)
