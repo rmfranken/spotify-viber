@@ -2,8 +2,8 @@
 
 #then make sure to make this file executable by running chmod +x run-spotify-viber.sh
 #then add this to your crontab by running crontab -e and adding the following line:
-#0 0 * * * /path/to/your/run-spotify-viber.sh
-#this will run the script every day at midnight, to make it run at 11:15 am you would do:
+#0 10 * * * /path/to/your/run-spotify-viber.sh
+#this will run the script every day at 10:00
 
 #you can change the time by changing the first two numbers, the first one is the minute and the second one is the hour
 
