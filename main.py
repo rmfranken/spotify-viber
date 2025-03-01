@@ -102,17 +102,22 @@ def get_target_monitor():
     """Get the target monitor for display"""
     try:
         monitors = screeninfo.get_monitors()
+        print(f"Monitors: {monitors}")
+        primary_monitor = next((m for m in monitors if m.is_primary), None)
+        
         if USE_PRIMARY_MONITOR:
-            primary_monitor = next((m for m in monitors if m.is_primary), None)
             if primary_monitor:
                 return primary_monitor
             else:
                 raise ValueError("Primary monitor not found")
         else:
-            if len(monitors) > 0:
-                return monitors[0]
+            # Return the first non-primary monitor if available
+            secondary_monitor = next((m for m in monitors if not m.is_primary), None)
+            if secondary_monitor:
+                return secondary_monitor
             else:
-                raise ValueError("No monitors detected")
+                # If no secondary monitor, return the primary or first monitor
+                return primary_monitor if primary_monitor else monitors[0]
     except Exception as e:
         print(f"Error getting monitor info: {e}")
 
