@@ -7,6 +7,9 @@ It can be shown on a seperate monitor for increased vibes and aesthetic when lis
 - Uses the Spotipy API for fetching data
 - Can be shown on a separate monitor for enhanced visual experience
 
+## Demo
+
+![Demo](demo.gif)
 
 ### Display Settings
 
