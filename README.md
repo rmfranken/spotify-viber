@@ -31,8 +31,8 @@ You can customize the display settings and more by modifying the [config.yaml](c
     ```
 
 ## Usage
-1. Set up your Spotify API credentials. You will need to create a `config.py` file with your `SPOTIPY_CLIENT_ID`, `SPOTIPY_CLIENT_SECRET`, and `SPOTIPY_REDIRECT_URI`. These can be found in your [Spotify Web API Dashboard](https://developer.spotify.com/documentation/web-api).
-    ```python
+1. Set up your Spotify API credentials using a .env or setting your environment variables `SPOTIPY_CLIENT_ID`, `SPOTIPY_CLIENT_SECRET`, and `SPOTIPY_REDIRECT_URI`. These can be found in your [Spotify Web API Dashboard](https://developer.spotify.com/documentation/web-api).
+    ```properties
     SPOTIPY_CLIENT_ID = 'your_client_id'
     SPOTIPY_CLIENT_SECRET = 'your_client_secret'
     SPOTIPY_REDIRECT_URI = 'your_redirect_uri'
