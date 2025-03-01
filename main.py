@@ -13,7 +13,7 @@ FONT = ("Courier New", 32, "bold")
 BACKGROUND_COLOR = "black"
 FOREGROUND_COLOR = "white"
 SCROLL_SPEED = 1000  # Milliseconds between scroll steps
-UPDATE_INTERVAL = 1000  # Spotify data fetch interval
+UPDATE_INTERVAL = 5000  # Spotify data fetch interval
 PADDING = "     "  # Padding between scrolling text repetitions
 MIN_DISPLAY_SIZE = 300  # Minimum size for album art
 
