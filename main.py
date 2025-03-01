@@ -16,6 +16,7 @@ SCROLL_SPEED = 1000  # Milliseconds between scroll steps
 UPDATE_INTERVAL = 5000  # Spotify data fetch interval
 PADDING = "     "  # Padding between scrolling text repetitions
 MIN_DISPLAY_SIZE = 300  # Minimum size for album art
+USE_PRIMARY_MONITOR = True  # Toggle between primary or secondary monitor
 
 # Initialize Spotify client
 load_dotenv()
@@ -45,14 +46,13 @@ def setup_ui():
     
     # Get display information
     monitor = get_target_monitor()
-    screen_width, screen_height = monitor.width, monitor.height
     
     # Calculate initial display size
-    initial_display_size = max(MIN_DISPLAY_SIZE, min(screen_width, screen_height) - 200)
+    initial_display_size = max(MIN_DISPLAY_SIZE, min(monitor.width, monitor.height) - 200)
     state.display_size = initial_display_size
     
     # Set up window
-    root.geometry(f"{screen_width}x{screen_height}+{monitor.x}+{monitor.y}")
+    root.geometry(f"{monitor.width}x{monitor.height}+{monitor.x}+{monitor.y}")
     root.attributes('-fullscreen', True)
     
     # Album art display
@@ -87,20 +87,24 @@ def get_target_monitor():
     """Get the target monitor for display"""
     try:
         monitors = screeninfo.get_monitors()
-        if len(monitors) == 2:
-            return monitors[0] if monitors[0].is_primary else monitors[1]
-        elif len(monitors) > 0:
-            print(f"Found {len(monitors)} monitors, using primary")
-            return next((m for m in monitors if m.is_primary), monitors[0])
+        if USE_PRIMARY_MONITOR:
+            primary_monitor = next((m for m in monitors if m.is_primary), None)
+            if primary_monitor:
+                return primary_monitor
+            else:
+                raise ValueError("Primary monitor not found")
         else:
-            raise ValueError("No monitors detected")
+            if len(monitors) > 0:
+                return monitors[0]
+            else:
+                raise ValueError("No monitors detected")
     except Exception as e:
         print(f"Error getting monitor info: {e}")
         # Create a default monitor info
         class DefaultMonitor:
             def __init__(self):
                 self.width = 1280
-                self.height = 720
+                self.height = 1024
                 self.x = 0
                 self.y = 0
         return DefaultMonitor()
