@@ -7,16 +7,21 @@ from io import BytesIO
 from dotenv import load_dotenv
 import screeninfo
 import threading
+import yaml
+
+# Load configuration from config.yaml
+with open("config.yaml", "r") as config_file:
+    config = yaml.safe_load(config_file)
 
 # Configuration
-FONT = ("Courier New", 32, "bold")
-BACKGROUND_COLOR = "black"
-FOREGROUND_COLOR = "white"
-SCROLL_SPEED = 1000  # Milliseconds between scroll steps
-UPDATE_INTERVAL = 5000  # Spotify data fetch interval
-PADDING = "     "  # Padding between scrolling text repetitions
-MIN_DISPLAY_SIZE = 300  # Minimum size for album art
-USE_PRIMARY_MONITOR = False  # Toggle between primary or secondary monitor
+FONT = tuple(config["FONT"])
+BACKGROUND_COLOR = config["BACKGROUND_COLOR"]
+FOREGROUND_COLOR = config["FOREGROUND_COLOR"]
+SCROLL_SPEED = config["SCROLL_SPEED"]
+UPDATE_INTERVAL = config["UPDATE_INTERVAL"]
+PADDING = config["PADDING"]
+MIN_DISPLAY_SIZE = config["MIN_DISPLAY_SIZE"]
+USE_PRIMARY_MONITOR = config["USE_PRIMARY_MONITOR"]
 
 # Initialize Spotify client
 load_dotenv()
@@ -102,7 +107,6 @@ def get_target_monitor():
     """Get the target monitor for display"""
     try:
         monitors = screeninfo.get_monitors()
-        print(f"Monitors: {monitors}")
         primary_monitor = next((m for m in monitors if m.is_primary), None)
         
         if USE_PRIMARY_MONITOR:

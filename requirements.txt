@@ -2,3 +2,4 @@ spotipy
 requests
 Pillow
 dotenv
+pyyaml
