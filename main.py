@@ -10,7 +10,7 @@ import threading
 import yaml
 
 # Load configuration from config.yaml
-with open("config.yaml", "r") as config_file:
+with open("./config.yaml", "r") as config_file:
     config = yaml.safe_load(config_file)
 
 # Configuration

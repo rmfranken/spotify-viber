@@ -9,5 +9,6 @@
 
 
 #!/bin/bash
-source /home/rmfranken/standardPythonEnvironment/bin/activate
-python /home/rmfranken/spotify-viber/main.py >> /home/rmfranken/spotify-viber/script.log 2>&1
+export DISPLAY=:0
+source /home/rmf/standardPythonEnvironment/bin/activate
+python /home/rmf/spotify-viber/main.py 
